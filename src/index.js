@@ -10,4 +10,10 @@ const Home = () => {
     )
 }
 
+// class Home extends React.Component {
+//     render() {
+//         return <h1>BoomTown</h1>
+//     }
+// };
+
 ReactDOM.render(<Home />, document.getElementById("root"));
