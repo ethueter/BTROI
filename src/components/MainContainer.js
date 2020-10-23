@@ -49,15 +49,34 @@ const MainContainer = () => {
         setEndPoints(urlArray);
     };
 
-    const checkRepoCount = async (obj) => {
-        let count = 30;
-        let repoCount =  await apiRequest.get("/repos").then(response => response.data.length)
-        console.log("testing repo count", repoCount);
-        if(count === repoCount) {
-            return true;
+    const getPublicRepos = async (pageCount = 1) => {
+        let repoCount;
+        if(pageCount < 2){
+            repoCount = await apiRequest.get("/repos").then(response => response.data.length)
+            
         } else {
-            return false;
+            repoCount = await apiRequest.get("/repos", {
+                params: {
+                    page: pageCount
+                }
+            }).then(response => response.data.length);
         }
+        console.log("getPublicRepos", repoCount);
+        return repoCount;
+    }
+
+    const checkRepoCount = async (obj) => {
+        let count = obj.public_repos;
+        let pageCount = 1;
+        let repoCount =  await getPublicRepos();
+        
+
+        while(repoCount < count){
+            pageCount++;
+            let newCount =  await getPublicRepos(pageCount);
+            repoCount+=newCount
+        }
+        return (count === repoCount) ? true : false;
     };
     
     
