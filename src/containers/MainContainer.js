@@ -123,6 +123,18 @@ const MainContainer = () => {
         })
     }
 
+    const getNextSet = async (pageNum) => {
+        let newSet = await apiRequest
+          .get("/repos", {
+            params: {
+              page: 2
+            }
+          })
+          .then(response => displayData.concat(response.data));
+
+        setDisplayData(newSet)
+    }
+
     return (
       <div className="main-container">
         <p>
@@ -132,8 +144,8 @@ const MainContainer = () => {
             https://api.github.com/orgs/boomtownroi
           </a> From that object perform 2 validations. 
         </p>
-        <li>1. Confirm that the updated_at time was greater than created_at</li>
-        <li>2. Confirm that the total number of repos retrievable from the /repos url matches the public_repos number from the top level object.</li>
+        <li>Confirm that the updated_at time was greater than created_at</li>
+        <li>Confirm that the total number of repos retrievable from the /repos url matches the public_repos number from the top level object.</li>
         <p>Next the challenge asked to explore all of the possible endpoints provided in the top level object. <br/>
             If the status code returned 200 then display the results, if not alert the user.
         </p>
@@ -142,7 +154,7 @@ const MainContainer = () => {
           <Endpoints endpoints={endPoints} request={followEndpoint} />
         ) : null}
         {displayData.length > 0 ? (
-          <DisplayContainer data={displayData} />
+          <DisplayContainer data={displayData} nextSet={getNextSet}/>
         ) : null}
       </div>
     );
